@@ -1,0 +1,20 @@
+
+## Handlebars.rb
+
+This uses [therubyracer](http://github.com/cowboyd/therubyracer) to bind to the _actual_ JavaScript implementation of
+[Handlebars.js](http://github.com/wycats/handlebars.js) so that you can use it from ruby.
+
+## Hack
+
+    git clone git@github.com:cowboyd/handlebars.rb.git #git it
+    cd handlebars.rb #go to it
+    git submodule update --init #pull down handlebars.js
+    rspec spec/ #test it
+
+## Use
+
+    require 'handlebars'
+    template = Handlebars.compile("{{say}}{{what}}")
+    template.call(:say => "Hey", :what => "Yuh!") #=> "Hey Yuh!"
+
+
