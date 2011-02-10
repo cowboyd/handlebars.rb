@@ -17,8 +17,9 @@ module Handlebars
     end
     
     def call(data)
-      @context[template] = @template
-      @context.eval "template(#{MultiJson.encode(data)})"
+      json = MultiJson.encode(data)
+      @context['template'] = @template
+      @context.eval "template(#{json})"
     end
     
   end
