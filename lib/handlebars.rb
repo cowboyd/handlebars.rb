@@ -8,11 +8,24 @@ module Handlebars
     @handlebars = cxt['Handlebars']
   end
   
+  
+  
   def compile(*args)
     Handlebars.module_eval do
       @handlebars.compile(*args)
     end
   end
-  
   module_function :compile
+  
+  
+  
+  def registerHelper(name, fn)
+    Handlebars.module_eval do
+      @handlebars.registerHelper(name, fn)
+    end
+  end
+  module_function :registerHelper
+  
+  
+  
 end
