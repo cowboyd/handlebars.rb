@@ -76,7 +76,7 @@ describe(Handlebars) do
   
   suite = QUnitSuite.new
   V8::Context.new(:with => TestCollector.new(suite)) do |cxt|
-    cxt.load(File.expand_path(File.dirname(__FILE__) + '/../js/test/handlebars.js'))
+    cxt.load(File.expand_path(File.dirname(__FILE__) + '/../js/lib/handlebars.js'))
     
     for mod in suite.modules
       describe mod.name do
