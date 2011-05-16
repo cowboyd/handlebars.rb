@@ -10,6 +10,10 @@ module Handlebars
     @handlebars = cxt['Handlebars']
   end
   
+  class << self
+    attr_reader :context
+  end
+  
   class CompiledTemplate
     
     def initialize(context, template)
