@@ -8,6 +8,16 @@ module Handlebars
     cxt.load(File.expand_path(File.join(File.dirname(__FILE__), '..','js','lib','handlebars.js')))
     @context = cxt
     @handlebars = cxt['Handlebars']
+    cxt.eval <<-JS
+      Handlebars.___compile = Handlebars.compile;
+      Handlebars.compile = function(environment, options) {
+        try {
+          return Handlebars.___compile(environment, options);
+        } catch(e) {
+          return e.message;
+        }
+      };
+    JS
   end
   
   class << self
@@ -28,11 +38,15 @@ module Handlebars
     
   end
   
+  class RenderError < StandardError; end
+  
   
   
   def compile(*args)
     Handlebars.module_eval do
-      CompiledTemplate.new(@context, @handlebars.compile(*args))
+      template = @handlebars.compile(*args)
+      raise(RenderError, template) if template.is_a?(String)
+      CompiledTemplate.new(@context, template)
     end
   end
   module_function :compile
