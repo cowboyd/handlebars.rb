@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
   Dir.chdir("js") do
-    s.files += `git ls-files`.split("\n")
+    s.files += `git ls-files`.split("\n").map {|f| "js/#{f}"}
     s.files += ['js/lib/handlebars/parser.js']
   end
 
