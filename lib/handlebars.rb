@@ -1,18 +1,23 @@
 
-require 'v8'
+require 'handlebars/loader'
 
 module Handlebars
-  
-  V8::Context.new do |cxt|
-    cxt.load(File.expand_path(File.join(File.dirname(__FILE__), '..','js','lib','handlebars.js')))
-    @handlebars = cxt['Handlebars']
-  end
-  
+
+  @loader = Loader.new
+
+  module_function
+
   def compile(*args)
+    handlebars.compile(*args)
+  end
+
+  def register_helper(name, &fn)
+    handlebars.registerHelper(name, fn)
+  end
+
+  def handlebars
     Handlebars.module_eval do
-      @handlebars.compile(*args)
+      @loader.require('handlebars')
     end
   end
-  
-  module_function :compile
 end
