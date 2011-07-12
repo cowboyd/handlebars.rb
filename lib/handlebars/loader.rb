@@ -1,5 +1,6 @@
 
 require 'v8'
+require 'pathname'
 
 module Handlebars
   class Loader
