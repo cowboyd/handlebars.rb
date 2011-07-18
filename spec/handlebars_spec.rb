@@ -11,7 +11,7 @@ describe(Handlebars) do
     end
 
     it "allows Ruby blocks as a property" do
-      t.call(:name => lambda {"Mate"}).should eql "Hello Mate"
+      t.call(:name => lambda {|context| ;"Mate"}).should eql "Hello Mate"
     end
 
     it "can use any Ruby object as a context" do
