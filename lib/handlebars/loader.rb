@@ -7,9 +7,6 @@ module Handlebars
 
     def initialize
       @cxt = V8::Context.new
-      @cxt["p"] = proc do |val|
-        puts "#{ERB::Util.h(val)}<br/>"
-      end
       @path = Pathname(__FILE__).dirname.join('..','..','js','lib')
       @modules = {}
     end
