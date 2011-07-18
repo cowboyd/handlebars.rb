@@ -4,6 +4,26 @@
 This uses [therubyracer](http://github.com/cowboyd/therubyracer) to bind to the _actual_ JavaScript implementation of
 [Handlebars.js](http://github.com/wycats/handlebars.js) so that you can use it from ruby.
 
+## Usage
+
+Simple stuff
+
+    require 'handlebars'
+    template = Handlebars.compile("{{say}}{{what}}")
+    template.call(:say => "Hey", :what => "Yuh!") #=> "Hey Yuh!"
+
+With functions as properties
+
+    template.call(:say => "Hey", :what => lambda {|this| ("yo" * 2) + "!"}) #=> "Hey yoyo!"
+
+Register block helpers:
+
+    Handlebars.register_helper(:twice) do |block|
+      "#{block.call}#{block.call}"
+    end
+    template = Handlebars.compile({{#twice}}Hurray!{{/twice}})
+    template.call #=> Hurray!Hurray!
+
 ## Hack
 
     git clone git@github.com:cowboyd/handlebars.rb.git #git it
@@ -11,10 +31,11 @@ This uses [therubyracer](http://github.com/cowboyd/therubyracer) to bind to the 
     git submodule update --init #pull down handlebars.js
     rspec spec/ #test it
 
-## Use
 
-    require 'handlebars'
-    template = Handlebars.compile("{{say}}{{what}}")
-    template.call(:say => "Hey", :what => "Yuh!") #=> "Hey Yuh!"
+## Rubygems
 
+  Handlebars is available via the [hbs](http://rubygems.org/gems/hbs) gem on rubygems.org. There
+  is an [abandoned](https://github.com/MSch/handlebars-ruby) pure-ruby implementation of handlebars
+  on github. Eventually, I'd like to merge these two projects, but I have not been able to contact the
+  owner of that gem.
 
