@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.email       = ["cowboyd@thefrontside.net"]
   s.homepage    = "http://github.com/cowboyd/handlebars.rb"
   s.summary     = %q{Ruby bindings for the handlebars.js templating library}
-  s.description = %q{Uses the rubyracer bind in rails}
+  s.description = %q{Uses the actual JavaScript implementation of Handlebars, but supports using Ruby objects as template contexts and Ruby procs as view functions and named helpers}
 
   s.rubyforge_project = "handlebars"
 
@@ -24,5 +24,5 @@ Gem::Specification.new do |s|
   end
 
   s.add_dependency "therubyracer", "~> 0.9.3beta1"
-  s.add_development_dependency "rspec", "~> 2.0.0"
+  s.add_development_dependency "rspec", "~> 2.0"
 end
