@@ -23,10 +23,18 @@ describe(Handlebars) do
     Handlebars.register_helper('alsowith') do |context, block|
       block.call(context)
     end
+    Handlebars.register_helper(:twice) do |block|
+      "#{block.call}#{block.call}"
+    end
 
     it "correctly passes context and implementation" do
       t = compile("it's so {{#alsowith weather}}*{{summary}}*{{/alsowith}}!")
       t.call(:weather => {:summary => "sunny"}).should eql "it's so *sunny*!"
+    end
+
+    it "doesn't nee a context or arguments to the call" do
+      t = compile("{{#twice}}Hurray!{{/twice}}")
+      t.call.should eql "Hurray!Hurray!"
     end
   end
 end
