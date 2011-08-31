@@ -23,6 +23,6 @@ Gem::Specification.new do |s|
     s.files += ['js/lib/handlebars/parser.js']
   end
 
-  s.add_dependency "therubyracer", "~> 0.9.3beta1"
+  s.add_dependency "therubyracer", "~> 0.9.4"
   s.add_development_dependency "rspec", "~> 2.0"
 end
