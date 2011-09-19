@@ -34,8 +34,8 @@ Register block helpers:
 
 ## Rubygems
 
-  Handlebars is available via the [hbs][1] gem on rubygems.org. There is also a
-  [handlebars][1] gem, which is a pure-ruby implementation that appears to no longer be maintained.
+  Handlebars is available via the [hbs][3] gem on rubygems.org. There is also a
+  [handlebars][4] gem, which is a pure-ruby implementation that appears to no longer be maintained.
 
 [1]: http://github.com/cowboyd/therubyracer "The Ruby Racer"
 [2]: http://github.com/wycats/handlebars.js "Handlebars JavaScript templating library"
