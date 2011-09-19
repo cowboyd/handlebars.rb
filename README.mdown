@@ -1,8 +1,8 @@
 
 ## Handlebars.rb
 
-This uses [therubyracer](http://github.com/cowboyd/therubyracer) to bind to the _actual_ JavaScript implementation of
-[Handlebars.js](http://github.com/wycats/handlebars.js) so that you can use it from ruby.
+This uses [therubyracer][1] to bind to the _actual_ JavaScript implementation of
+[Handlebars.js][2] so that you can use it from ruby.
 
 ## Usage
 
@@ -34,8 +34,11 @@ Register block helpers:
 
 ## Rubygems
 
-  Handlebars is available via the [hbs](http://rubygems.org/gems/hbs) gem on rubygems.org. There
-  is an [abandoned](https://github.com/MSch/handlebars-ruby) pure-ruby implementation of handlebars
-  on github. Eventually, I'd like to merge these two projects, but I have not been able to contact the
-  owner of that gem.
+  Handlebars is available via the [hbs][1] gem on rubygems.org. There is also a
+  [handlebars][1] gem, which is a pure-ruby implementation that appears to no longer be maintained.
+
+[1]: http://github.com/cowboyd/therubyracer "The Ruby Racer"
+[2]: http://github.com/wycats/handlebars.js "Handlebars JavaScript templating library"
+[3]: http://rubygems.org/gems/hbs "handelbars gem in JavaScript"
+[4]: http://rubygems.org/gems/handlebars "pure ruby handlebars gem"
 
