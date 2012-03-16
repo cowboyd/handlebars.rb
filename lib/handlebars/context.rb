@@ -1,4 +1,5 @@
 require 'commonjs'
+require 'v8'
 
 module Handlebars
   class Context
