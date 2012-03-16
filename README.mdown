@@ -9,7 +9,8 @@ This uses [therubyracer][1] to bind to the _actual_ JavaScript implementation of
 Simple stuff
 
     require 'handlebars'
-    template = Handlebars.compile("{{say}}{{what}}")
+    handlebars = Handlebars::Context.new
+    template = handlebars.compile("{{say}}{{what}}")
     template.call(:say => "Hey", :what => "Yuh!") #=> "Hey Yuh!"
 
 With functions as properties
@@ -18,10 +19,10 @@ With functions as properties
 
 Register block helpers:
 
-    Handlebars.register_helper(:twice) do |block|
+    handlebars.register_helper(:twice) do |block|
       "#{block.call}#{block.call}"
     end
-    template = Handlebars.compile({{#twice}}Hurray!{{/twice}})
+    template = handlebars.compile({{#twice}}Hurray!{{/twice}})
     template.call #=> Hurray!Hurray!
 
 ## Hack
