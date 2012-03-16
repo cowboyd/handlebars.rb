@@ -1,11 +1,9 @@
 
 require 'handlebars'
-describe(Handlebars) do
-
-  before {extend Handlebars}
+describe(Handlebars::Context) do
 
   describe "a simple template" do
-    let(:t) {compile("Hello {{name}}")}
+    let(:t) {subject.compile("Hello {{name}}")}
     it "allows simple subsitution" do
       t.call(:name => 'World').should eql "Hello World"
     end
@@ -20,20 +18,22 @@ describe(Handlebars) do
   end
 
   describe "registering Helpers" do
-    Handlebars.register_helper('alsowith') do |context, block|
-      block.call(context)
-    end
-    Handlebars.register_helper(:twice) do |block|
-      "#{block.call}#{block.call}"
+    before do
+      subject.register_helper('alsowith') do |this, context, block|
+        block.call(context)
+      end
+      subject.register_helper(:twice) do |this, block|
+        "#{block.call}#{block.call}"
+      end
     end
 
     it "correctly passes context and implementation" do
-      t = compile("it's so {{#alsowith weather}}*{{summary}}*{{/alsowith}}!")
+      t = subject.compile("it's so {{#alsowith weather}}*{{summary}}*{{/alsowith}}!")
       t.call(:weather => {:summary => "sunny"}).should eql "it's so *sunny*!"
     end
 
     it "doesn't nee a context or arguments to the call" do
-      t = compile("{{#twice}}Hurray!{{/twice}}")
+      t = subject.compile("{{#twice}}Hurray!{{/twice}}")
       t.call.should eql "Hurray!Hurray!"
     end
   end

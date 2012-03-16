@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 require "handlebars/version"
 
 Gem::Specification.new do |s|
-  s.name        = "hbs"
+  s.name        = "handlebars"
   s.version     = Handlebars::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Charles Lowell"]
@@ -18,11 +18,12 @@ Gem::Specification.new do |s|
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
-  Dir.chdir("js") do
-    s.files += `git ls-files`.split("\n").map {|f| "js/#{f}"}
-    s.files += ['js/lib/handlebars/parser.js']
+  Dir.chdir("vendor/handlebars") do
+    s.files += `git ls-files`.split("\n").map {|f| "vendor/handlebars/#{f}"}
+    s.files += ['vendor/handlebars/lib/handlebars/compiler/parser.js']
   end
 
-  s.add_dependency "therubyracer", "~> 0.9.4"
+  s.add_dependency "therubyracer", "~> 0.10.0beta1"
+  s.add_dependency "commonjs", "~> 0.2.3"
   s.add_development_dependency "rspec", "~> 2.0"
 end

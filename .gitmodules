@@ -1,3 +1,3 @@
-[submodule "js"]
-	path = js
+[submodule "vendor/handlebars"]
+	path = vendor/handlebars
 	url = https://github.com/wycats/handlebars.js.git
