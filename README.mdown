@@ -25,6 +25,12 @@ Register block helpers:
     template = handlebars.compile({{#twice}}Hurray!{{/twice}})
     template.call #=> Hurray!Hurray!
 
+By default, handlebars will escape strings that are returned by your block helpers. To
+mark a string as safe:
+
+    template = handlebars.compile("{{safe}}")
+    template.call(:safe => proc {Handlebars::SafeString.new("<pre>Totally Safe!<pre>")})
+
 ## Hack
 
     git clone git@github.com:cowboyd/handlebars.rb.git #git it
@@ -33,13 +39,6 @@ Register block helpers:
     rspec spec/ #test it
 
 
-## Rubygems
-
-  Handlebars is available via the [hbs][3] gem on rubygems.org. There is also a
-  [handlebars][4] gem, which is a pure-ruby implementation that appears to no longer be maintained.
-
 [1]: http://github.com/cowboyd/therubyracer "The Ruby Racer"
 [2]: http://github.com/wycats/handlebars.js "Handlebars JavaScript templating library"
-[3]: http://rubygems.org/gems/hbs "handelbars gem in JavaScript"
-[4]: http://rubygems.org/gems/handlebars "pure ruby handlebars gem"
 
