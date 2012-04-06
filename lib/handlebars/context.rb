@@ -23,16 +23,23 @@ module Handlebars
     end
     
     def compile(*args)
-      handlebars.compile(*args)
+      ::Handlebars::Template.new(self, handlebars.compile(*args))
     end
 
     def register_helper(name, &fn)
       handlebars.registerHelper(name, fn)
     end
 
+    def register_partial(name, content)
+      handlebars.registerPartial(name, content)
+    end
+
     def handlebars
       @js.require('handlebars/base')
     end
 
+    class << self
+      attr_accessor :current
+    end
   end
 end

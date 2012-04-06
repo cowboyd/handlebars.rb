@@ -37,4 +37,20 @@ describe(Handlebars::Context) do
       t.call.should eql "Hurray!Hurray!"
     end
   end
+
+  describe "registering Partials" do
+    before do
+      subject.register_partial('legend', 'I am {{legend}}')
+    end
+    it "renders partials" do
+      t = subject.compile("{{> legend}}").call(:legend => 'Legend!').should eql "I am Legend!"
+    end
+  end
+
+  describe "creating safe strings from ruby" do
+    let(:t) {subject.compile("{{safe}}")}
+    it "respects safe strings returned from ruby blocks" do
+      t.call(:safe => lambda {|this, *args| Handlebars::SafeString.new("<pre>totally safe</pre>")}).should eql "<pre>totally safe</pre>"
+    end
+  end
 end
