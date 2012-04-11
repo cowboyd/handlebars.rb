@@ -20,6 +20,7 @@ module Handlebars
         @js.require("handlebars/compiler/#{compiler_module}")
       end
       @js.require('handlebars/runtime')
+      @partials = handlebars.partials = Handlebars::Partials.new
     end
     
     def compile(*args)
@@ -32,6 +33,10 @@ module Handlebars
 
     def register_partial(name, content)
       handlebars.registerPartial(name, content)
+    end
+
+    def partial_missing(&fn)
+      @partials.partial_missing = fn
     end
 
     def handlebars

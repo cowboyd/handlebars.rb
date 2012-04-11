@@ -3,7 +3,7 @@ require 'handlebars'
 describe(Handlebars::Context) do
 
   describe "a simple template" do
-    let(:t) {subject.compile("Hello {{name}}")}
+    let(:t) {compile("Hello {{name}}")}
     it "allows simple subsitution" do
       t.call(:name => 'World').should eql "Hello World"
     end
@@ -28,22 +28,40 @@ describe(Handlebars::Context) do
     end
 
     it "correctly passes context and implementation" do
-      t = subject.compile("it's so {{#alsowith weather}}*{{summary}}*{{/alsowith}}!")
+      t = compile("it's so {{#alsowith weather}}*{{summary}}*{{/alsowith}}!")
       t.call(:weather => {:summary => "sunny"}).should eql "it's so *sunny*!"
     end
 
     it "doesn't nee a context or arguments to the call" do
-      t = subject.compile("{{#twice}}Hurray!{{/twice}}")
+      t = compile("{{#twice}}Hurray!{{/twice}}")
       t.call.should eql "Hurray!Hurray!"
     end
   end
 
   describe "registering Partials" do
     before do
-      subject.register_partial('legend', 'I am {{legend}}')
+      subject.register_partial('legend', 'I am {{who}}')
     end
     it "renders partials" do
-      t = subject.compile("{{> legend}}").call(:legend => 'Legend!').should eql "I am Legend!"
+      compile("{{> legend}}").call(:who => 'Legend!').should eql "I am Legend!"
+    end
+  end
+
+  describe "dynamically loading partial" do
+    it "can be done with a string" do
+      subject.partial_missing do |name|
+        "unable to find >#{name}"
+      end
+      compile("I am {{>missing}}").call().should eql "I am unable to find >missing"
+    end
+
+    it "can be done with a function" do
+      subject.partial_missing do |name|
+        lambda do |this, context, options|
+          "unable to find >#{name}"
+        end
+      end
+      compile("I am {{>missing}}").call().should eql "I am unable to find >missing"
     end
   end
 
@@ -52,5 +70,9 @@ describe(Handlebars::Context) do
     it "respects safe strings returned from ruby blocks" do
       t.call(:safe => lambda {|this, *args| Handlebars::SafeString.new("<pre>totally safe</pre>")}).should eql "<pre>totally safe</pre>"
     end
+  end
+
+  def compile(*args)
+    subject.compile(*args)
   end
 end

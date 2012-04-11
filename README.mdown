@@ -6,18 +6,18 @@ This uses [therubyracer][1] to bind to the _actual_ JavaScript implementation of
 
 ## Usage
 
-Simple stuff
+### Simple stuff
 
     require 'handlebars'
     handlebars = Handlebars::Context.new
     template = handlebars.compile("{{say}}{{what}}")
     template.call(:say => "Hey", :what => "Yuh!") #=> "Hey Yuh!"
 
-With functions as properties
+### functions as properties
 
     template.call(:say => "Hey", :what => lambda {|this| ("yo" * 2) + "!"}) #=> "Hey yoyo!"
 
-Register block helpers:
+### Block Helpers:
 
     handlebars.register_helper(:twice) do |block|
       "#{block.call}#{block.call}"
@@ -25,11 +25,40 @@ Register block helpers:
     template = handlebars.compile({{#twice}}Hurray!{{/twice}})
     template.call #=> Hurray!Hurray!
 
+### Safe Strings
+
 By default, handlebars will escape strings that are returned by your block helpers. To
 mark a string as safe:
 
     template = handlebars.compile("{{safe}}")
     template.call(:safe => proc {Handlebars::SafeString.new("<pre>Totally Safe!<pre>")})
+
+### Partials
+
+You can directly register partials
+
+    handlebars.register_partial("whoami", " I am {{who}}")
+    handlebars.compile("{{>whoami}}").call(:who => 'Legend') #=> I am Legend
+
+Partials can also be dynamically looked up by defining a partial_missing behavior:
+
+    handlebars.partial_missing do |name|
+      "unable to find >#{name}"
+    end
+    handlebars.compile("{{>missing}}").call #=> unable to find >missing
+    
+Missing partials can also be returned as a function:
+
+    count = 0
+    handlebars.partial_missing do |name|
+      lambda do |this, context, options|
+        count += 1
+        "#{count} miss(es) when trying to look up a partial"
+      end
+    end
+    t = handlebars.compile("{{>missing}}")
+    t.call #=> 1 miss(es) when trying to look up a partial
+    t.call #=> 2 miss(es) when tyring to look up a partial
 
 ## Hack
 
