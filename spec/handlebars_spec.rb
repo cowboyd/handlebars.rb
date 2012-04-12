@@ -58,10 +58,10 @@ describe(Handlebars::Context) do
     it "can be done with a function" do
       subject.partial_missing do |name|
         lambda do |this, context, options|
-          "unable to find >#{name}"
+          "unable to find my #{name} #{context.what}"
         end
       end
-      compile("I am {{>missing}}").call().should eql "I am unable to find >missing"
+      compile("I am {{>missing}}").call(:what => 'shoes').should eql "I am unable to find my missing shoes"
     end
   end
 
