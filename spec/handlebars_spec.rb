@@ -72,6 +72,13 @@ describe(Handlebars::Context) do
     end
   end
 
+  describe "context specific data" do
+    before {subject['foo'] = 'bar'}
+    it 'can be get and set' do
+      subject['foo'].should eql 'bar'
+    end
+  end
+
   def compile(*args)
     subject.compile(*args)
   end

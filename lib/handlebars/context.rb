@@ -43,8 +43,26 @@ module Handlebars
       @js.require('handlebars/base')
     end
 
+    def runtime
+      @js.runtime
+    end
+
+    def []=(key, value)
+      data[key] = value
+    end
+
+    def [](key)
+      data[key]
+    end
+
     class << self
       attr_accessor :current
+    end
+
+    private
+
+    def data
+      handlebars[:_rubydata] ||= @js.new_object
     end
   end
 end
