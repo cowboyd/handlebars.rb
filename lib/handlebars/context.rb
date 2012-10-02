@@ -27,6 +27,10 @@ module Handlebars
       ::Handlebars::Template.new(self, handlebars.compile(*args))
     end
 
+    def precompile(*args)
+      handlebars.precompile(*args)
+    end
+
     def register_helper(name, &fn)
       handlebars.registerHelper(name, fn)
     end
