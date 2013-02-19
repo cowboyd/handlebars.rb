@@ -20,10 +20,10 @@ describe(Handlebars::Context) do
   describe "registering Helpers" do
     before do
       subject.register_helper('alsowith') do |this, context, block|
-        block.call(context)
+        block.fn(context)
       end
       subject.register_helper(:twice) do |this, block|
-        "#{block.call}#{block.call}"
+        "#{block.fn}#{block.fn}"
       end
     end
 
