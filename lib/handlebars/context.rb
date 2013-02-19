@@ -8,7 +8,7 @@ module Handlebars
         File.expand_path('../../../vendor/bootstrap', __FILE__),
         File.expand_path('../../../vendor/handlebars/lib', __FILE__)
       ]
-      
+
       # This is a slightly modified version of handlebars.js found in the main
       # distribution. The Ruby commonjs environment does not support full directory
       # requires, so we expand them by hand. Eventually this may be fixed upstream
@@ -16,13 +16,11 @@ module Handlebars
 
       @js.require('handlebars/base')
       @js.require('handlebars/utils')
-      for compiler_module in %w(ast base compiler index parser printer visitor)
-        @js.require("handlebars/compiler/#{compiler_module}")
-      end
+      @js.require('handlebars/compiler/index')
       @js.require('handlebars/runtime')
       @partials = handlebars.partials = Handlebars::Partials.new
     end
-    
+
     def compile(*args)
       ::Handlebars::Template.new(self, handlebars.compile(*args))
     end
