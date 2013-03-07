@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
   
-  s.add_dependency "therubyracer", "~> 0.9.4"
+  s.add_dependency "therubyracer"
   s.add_dependency "multi_json"
   s.add_dependency "yajl-ruby", "~> 0.7.8"
   s.add_development_dependency "rspec", ">= 2.0.0"
