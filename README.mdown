@@ -19,11 +19,19 @@ This uses [therubyracer][1] to bind to the _actual_ JavaScript implementation of
 
 ### Block Helpers:
 
-    handlebars.register_helper(:twice) do |block|
-      "#{block.call}#{block.call}"
+Just like JavaScript, you can write block helpers with an `{{else}}` section. To print
+out a section twice if a condition is met:
+
+    handlebars.register_helper(:twice) do |context, condition, block|
+      if condition
+        "#{block.fn(context)}#{block.fn(context)}"
+      else
+        block.inverse(context)
+      end
     end
-    template = handlebars.compile({{#twice}}Hurray!{{/twice}})
-    template.call #=> Hurray!Hurray!
+    template = handlebars.compile({{#twice foo}}Hurray!{{else}}Boo!{{/twice}})
+    template.call(foo: true) #=> Hurray!Hurray!
+    template.call(foo: false) #=> Boo!
 
 ### Safe Strings
 
