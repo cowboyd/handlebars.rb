@@ -72,6 +72,9 @@ Missing partials can also be returned as a function:
     git clone git@github.com:cowboyd/handlebars.rb.git #git it
     cd handlebars.rb #go to it
     git submodule update --init #pull down handlebars.js
+    cd vendor/handlebars
+    rake compile #compile handlebars.js
+    cd ../..
     rspec spec/ #test it
 
 
