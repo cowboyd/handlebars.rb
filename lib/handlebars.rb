@@ -1,4 +1,3 @@
-
 require 'v8'
 require 'multi_json'
 
@@ -42,23 +41,24 @@ module Handlebars
   
   
   
-  def compile(*args)
-    Handlebars.module_eval do
-      template = @handlebars.compile(*args)
-      raise(RenderError, template) if template.is_a?(String)
-      CompiledTemplate.new(@context, template)
-    end
+  def self.precompile(template)
+    @handlebars.precompile(template)
   end
-  module_function :compile
   
-  
-  
-  def registerHelper(name, fn)
-    Handlebars.module_eval do
-      @handlebars.registerHelper(name, fn)
-    end
+  def self.load_precompiled(precompiled_template)
+    template = Handlebars.context.eval "Handlebars.template(#{precompiled_template})"
+    CompiledTemplate.new(@context, template)
   end
-  module_function :registerHelper
+  
+  def self.compile(*args)
+    template = @handlebars.compile(*args)
+    raise(RenderError, template) if template.is_a?(String)
+    CompiledTemplate.new(@context, template)
+  end
+  
+  def self.register_helper(name, fn)
+    @handlebars.registerHelper(name, fn)
+  end
   
   
   
