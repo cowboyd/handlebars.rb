@@ -18,13 +18,10 @@ Gem::Specification.new do |s|
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
-  Dir.chdir("vendor/handlebars") do
-    s.files += `git ls-files`.split("\n").map {|f| "vendor/handlebars/#{f}"}
-    s.files += ['vendor/handlebars/lib/handlebars/compiler/parser.js']
-  end
 
   s.add_dependency "therubyracer", "~> 0.11.1"
   s.add_dependency "commonjs", "~> 0.2.3"
+  s.add_dependency "handlebars-source", "~> 1.0.12"
   s.add_development_dependency "rake"
   s.add_development_dependency "rspec", "~> 2.0"
 end
