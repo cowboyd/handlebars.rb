@@ -1,7 +1,7 @@
-
 module Handlebars
-  autoload :Context,    'handlebars/context'
-  autoload :Template,   'handlebars/template'
-  autoload :Partials,   'handlebars/partials'
-  autoload :SafeString, 'handlebars/safe_string'
 end
+
+require 'handlebars/context'
+require 'handlebars/template'
+require 'handlebars/partials'
+require 'handlebars/safe_string'
