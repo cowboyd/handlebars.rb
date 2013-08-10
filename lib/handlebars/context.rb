@@ -1,3 +1,4 @@
+require 'handlebars/source'
 require 'commonjs'
 require 'v8'
 
@@ -5,19 +6,9 @@ module Handlebars
   class Context
     def initialize
       @js = CommonJS::Environment.new V8::Context.new, :path => [
-        File.expand_path('../../../vendor/bootstrap', __FILE__),
-        File.expand_path('../../../vendor/handlebars/lib', __FILE__)
+        File.dirname(Handlebars::Source.bundled_path)
       ]
 
-      # This is a slightly modified version of handlebars.js found in the main
-      # distribution. The Ruby commonjs environment does not support full directory
-      # requires, so we expand them by hand. Eventually this may be fixed upstream
-      # but right now I'm not sure if this is a node-specific extension.
-
-      @js.require('handlebars/base')
-      @js.require('handlebars/utils')
-      @js.require('handlebars/compiler/index')
-      @js.require('handlebars/runtime')
       @partials = handlebars.partials = Handlebars::Partials.new
     end
 
@@ -42,7 +33,7 @@ module Handlebars
     end
 
     def handlebars
-      @js.require('handlebars/base')
+      @js.require('handlebars')
     end
 
     def runtime
