@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   Dir.chdir("vendor/handlebars") do
     s.files += `git ls-files`.split("\n").map {|f| "vendor/handlebars/#{f}"}
+    `rake`
     s.files += ['vendor/handlebars/lib/handlebars/compiler/parser.js']
   end
 
