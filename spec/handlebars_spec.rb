@@ -13,7 +13,7 @@ describe(Handlebars::Context) do
     end
 
     it "can use any Ruby object as a context" do
-      t.call(mock(:Object, :name => "Flipper")).should eql "Hello Flipper"
+      t.call(double(:Object, :name => "Flipper")).should eql "Hello Flipper"
     end
   end
 
