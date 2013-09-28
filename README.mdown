@@ -10,12 +10,12 @@ This uses [therubyracer][1] to bind to the _actual_ JavaScript implementation of
 
     require 'handlebars'
     handlebars = Handlebars::Context.new
-    template = handlebars.compile("{{say}}{{what}}")
+    template = handlebars.compile("{{say}} {{what}}")
     template.call(:say => "Hey", :what => "Yuh!") #=> "Hey Yuh!"
 
 ### functions as properties
 
-    template.call(:say => "Hey", :what => lambda {|this| ("yo" * 2) + "!"}) #=> "Hey yoyo!"
+    template.call(:say => "Hey ", :what => lambda {|this| ("yo" * 2) + "!"}) #=> "Hey yoyo!"
 
 ### Block Helpers:
 
@@ -29,7 +29,7 @@ out a section twice if a condition is met:
         block.inverse(context)
       end
     end
-    template = handlebars.compile({{#twice foo}}Hurray!{{else}}Boo!{{/twice}})
+    template = handlebars.compile("{{#twice foo}}Hurray!{{else}}Boo!{{/twice}}")
     template.call(foo: true) #=> Hurray!Hurray!
     template.call(foo: false) #=> Boo!
 
@@ -45,7 +45,7 @@ mark a string as safe:
 
 You can directly register partials
 
-    handlebars.register_partial("whoami", " I am {{who}}")
+    handlebars.register_partial("whoami", "I am {{who}}")
     handlebars.compile("{{>whoami}}").call(:who => 'Legend') #=> I am Legend
 
 Partials can also be dynamically looked up by defining a partial_missing behavior:
