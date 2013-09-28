@@ -1,4 +1,3 @@
-
 ## Handlebars.rb
 
 This uses [therubyracer][1] to bind to the _actual_ JavaScript implementation of
@@ -10,12 +9,12 @@ This uses [therubyracer][1] to bind to the _actual_ JavaScript implementation of
 
     require 'handlebars'
     handlebars = Handlebars::Context.new
-    template = handlebars.compile("{{say}}{{what}}")
+    template = handlebars.compile("{{say}} {{what}}")
     template.call(:say => "Hey", :what => "Yuh!") #=> "Hey Yuh!"
 
 ### functions as properties
 
-    template.call(:say => "Hey", :what => lambda {|this| ("yo" * 2) + "!"}) #=> "Hey yoyo!"
+    template.call(:say => "Hey ", :what => lambda {|this| ("yo" * 2) + "!"}) #=> "Hey yoyo!"
 
 ### Block Helpers:
 
@@ -29,7 +28,7 @@ out a section twice if a condition is met:
         block.inverse(context)
       end
     end
-    template = handlebars.compile({{#twice foo}}Hurray!{{else}}Boo!{{/twice}})
+    template = handlebars.compile("{{#twice foo}}Hurray!{{else}}Boo!{{/twice}}")
     template.call(foo: true) #=> Hurray!Hurray!
     template.call(foo: false) #=> Boo!
 
@@ -45,7 +44,7 @@ mark a string as safe:
 
 You can directly register partials
 
-    handlebars.register_partial("whoami", " I am {{who}}")
+    handlebars.register_partial("whoami", "I am {{who}}")
     handlebars.compile("{{>whoami}}").call(:who => 'Legend') #=> I am Legend
 
 Partials can also be dynamically looked up by defining a partial_missing behavior:
@@ -73,6 +72,9 @@ Missing partials can also be returned as a function:
     git clone git@github.com:cowboyd/handlebars.rb.git #git it
     cd handlebars.rb #go to it
     git submodule update --init #pull down handlebars.js
+    cd vendor/handlebars
+    rake compile #compile handlebars.js
+    cd ../..
     rspec spec/ #test it
 
 
