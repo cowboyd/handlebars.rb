@@ -1,13 +1,11 @@
 require 'handlebars/source'
-require 'commonjs'
 require 'v8'
 
 module Handlebars
   class Context
     def initialize
-      @js = CommonJS::Environment.new V8::Context.new, :path => [
-        File.dirname(Handlebars::Source.bundled_path)
-      ]
+      @js = V8::Context.new
+      @js.load(Handlebars::Source.bundled_path)
 
       @partials = handlebars.partials = Handlebars::Partials.new
     end
@@ -33,11 +31,7 @@ module Handlebars
     end
 
     def handlebars
-      @js.require('handlebars')
-    end
-
-    def runtime
-      @js.runtime
+      @js.eval('Handlebars')
     end
 
     def []=(key, value)
@@ -55,7 +49,7 @@ module Handlebars
     private
 
     def data
-      handlebars[:_rubydata] ||= @js.new_object
+      handlebars[:_rubydata] ||= handlebars.create()
     end
   end
 end

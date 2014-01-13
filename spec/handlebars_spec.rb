@@ -17,6 +17,13 @@ describe(Handlebars::Context) do
     end
   end
 
+  describe "allows Handlebars whitespace operator" do
+    let(:t) {compile("whitespace    {{~word~}}   be replaced.")}
+    it "consumes all whitespace characters before/after the tag with the whitespace operator" do
+      t.call(:word => "should").should eql "whitespaceshouldbe replaced."
+    end
+  end
+
   describe "registering Helpers" do
     before do
       subject.register_helper('alsowith') do |this, context, block|
