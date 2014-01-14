@@ -54,7 +54,7 @@ Partials can also be dynamically looked up by defining a partial_missing behavio
       "unable to find >#{name}"
     end
     handlebars.compile("{{>missing}}").call #=> unable to find >missing
-    
+
 Missing partials can also be returned as a function:
 
     count = 0
@@ -68,12 +68,9 @@ Missing partials can also be returned as a function:
     t.call #=> 1 miss(es) when trying to look up a partial
     t.call #=> 2 miss(es) when tyring to look up a partial
 
-## Hack
+## Test
 
-    git clone git@github.com:cowboyd/handlebars.rb.git #git it
-    cd handlebars.rb #go to it
-    git submodule update --init #pull down handlebars.js
-    rspec spec/ #test it
+    rspec spec/
 
 
 [1]: http://github.com/cowboyd/therubyracer "The Ruby Racer"
