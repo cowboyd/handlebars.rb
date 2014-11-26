@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.files         = `git ls-files lib README.mdown`.split("\n")
 
   s.add_dependency "therubyracer", "~> 0.12.0"
-  s.add_dependency "handlebars-source", "~> 1.3.0"
+  s.add_dependency "handlebars-source", "~> 2.0.0"
   s.add_development_dependency "rake"
   s.add_development_dependency "rspec", "~> 2.0"
 end

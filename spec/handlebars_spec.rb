@@ -89,7 +89,7 @@ describe(Handlebars::Context) do
   describe "precompiling templates" do
     let(:t) {precompile("foo {{bar}}")}
     it "should compile down to javascript" do
-      t.should be_start_with 'function'
+      t.should include 'function'
     end
   end
 
