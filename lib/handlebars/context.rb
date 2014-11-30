@@ -26,6 +26,10 @@ module Handlebars
       handlebars.registerPartial(name, content)
     end
 
+    def create_frame(data)
+      handlebars.createFrame(data)
+    end
+
     def partial_missing(&fn)
       @partials.partial_missing = fn
     end

@@ -1,15 +1,14 @@
-
 require 'handlebars'
 describe(Handlebars::Context) do
 
   describe "a simple template" do
-    let(:t) {compile("Hello {{name}}")}
+    let(:t) { compile("Hello {{name}}") }
     it "allows simple subsitution" do
       t.call(:name => 'World').should eql "Hello World"
     end
 
     it "allows Ruby blocks as a property" do
-      t.call(:name => lambda {|context| ;"Mate"}).should eql "Hello Mate"
+      t.call(:name => lambda { |context| ; "Mate" }).should eql "Hello Mate"
     end
 
     it "can use any Ruby object as a context" do
@@ -18,7 +17,7 @@ describe(Handlebars::Context) do
   end
 
   describe "allows Handlebars whitespace operator" do
-    let(:t) {compile("whitespace    {{~word~}}   be replaced.")}
+    let(:t) { compile("whitespace    {{~word~}}   be replaced.") }
     it "consumes all whitespace characters before/after the tag with the whitespace operator" do
       t.call(:word => "should").should eql "whitespaceshouldbe replaced."
     end
@@ -73,23 +72,42 @@ describe(Handlebars::Context) do
   end
 
   describe "creating safe strings from ruby" do
-    let(:t) {subject.compile("{{safe}}")}
+    let(:t) { subject.compile("{{safe}}") }
     it "respects safe strings returned from ruby blocks" do
-      t.call(:safe => lambda {|this, *args| Handlebars::SafeString.new("<pre>totally safe</pre>")}).should eql "<pre>totally safe</pre>"
+      t.call(:safe => lambda { |this, *args| Handlebars::SafeString.new("<pre>totally safe</pre>") }).should eql "<pre>totally safe</pre>"
     end
   end
 
   describe "context specific data" do
-    before {subject['foo'] = 'bar'}
+    before { subject['foo'] = 'bar' }
     it 'can be get and set' do
       subject['foo'].should eql 'bar'
     end
   end
 
   describe "precompiling templates" do
-    let(:t) {precompile("foo {{bar}}")}
+    let(:t) { precompile("foo {{bar}}") }
     it "should compile down to javascript" do
       t.should include 'function'
+    end
+  end
+
+  describe "private variables" do
+    let(:t) {subject.compile("{{#list array}}{{@index}}. {{title}} {{@dummy}}{{/list}}")}
+    before do
+      subject.register_helper('list') do |this, context, block|
+        "<ul>" + context.each_with_index.map do |x, i|
+          if block.keys.include? "data"
+            data = subject.create_frame(block.data)
+            data.index = i
+            data.dummy = "dummy"
+          end
+          "<li>" + block.fn(x, data: data) + "</li>"
+        end.join + "</ul>"
+      end
+    end
+    it "sets the index variable correctly" do
+      t.call(:array => [{:title => "You are"}, {:title => "He is"}]).should == "<ul><li>0. You are dummy</li><li>1. He is dummy</li></ul>"
     end
   end
 
