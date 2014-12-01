@@ -111,6 +111,19 @@ describe(Handlebars::Context) do
     end
   end
 
+  describe "hash arguments" do
+    let(:t) {subject.compile(%({{#list nav id="nav-bar" class="top"}}<a href="{{url}}">{{title}}</a>{{/list}}))}
+    before do
+      subject.register_helper :list do |this, context, options|
+        attrs = options[:hash].sort.map{|k,v| "#{k}=\"#{v}\""}.join(' ')
+        "<ul #{attrs}>" + context.map{|item| "<li>" + options.fn(item) + "</li>"}.join + "</ul>"
+      end
+    end
+    it "accepts hash attributes correctly" do
+      t.call({nav: [{url: 'url', title: 'title'}]}).should == %(<ul class="top" id="nav-bar"><li><a href="url">title</a></li></ul>)
+    end
+  end
+
   def compile(*args)
     subject.compile(*args)
   end
