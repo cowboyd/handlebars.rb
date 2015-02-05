@@ -4,7 +4,8 @@ module Handlebars
       if context = Context.current
         context.handlebars['SafeString'].new(string)
       else
-        fail "Cannot instantiate Handlebars.SafeString outside a running template Evaluation"
+        warn "Cannot instantiate Handlebars.SafeString outside a running template Evaluation"
+        string
       end
     end
   end
