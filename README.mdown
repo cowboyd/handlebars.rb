@@ -106,6 +106,14 @@ Missing partials can also be returned as a function:
     t.call #=> 1 miss(es) when trying to look up a partial
     t.call #=> 2 miss(es) when tyring to look up a partial
 
+### Security
+
+In general, you should not trust user-provided templates: a template can call any method
+(with no arguments) or access any property on any object in the `Handlebars::Context`.
+
+If you'd like to render user-provided templates, you'd want to make sure you do so in a
+sanitized Context, e.g. no filesystem access, read-only or no database access, etc.
+
 ## Test
 
     rspec spec/

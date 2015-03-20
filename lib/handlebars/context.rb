@@ -5,6 +5,7 @@ module Handlebars
   class Context
     def initialize
       @js = V8::Context.new
+      @js['global'] = {} # there may be a more appropriate object to be used here @MHW
       @js.load(Handlebars::Source.bundled_path)
 
       @partials = handlebars.partials = Handlebars::Partials.new
