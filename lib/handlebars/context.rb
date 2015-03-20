@@ -14,6 +14,14 @@ module Handlebars
       ::Handlebars::Template.new(self, handlebars.compile(*args))
     end
 
+    def load_helpers(helpers_pattern)
+      Dir[helpers_pattern].each{ |path| load_helper(path) }
+    end
+
+    def load_helper(path)
+      @js.load(path)
+    end
+
     def precompile(*args)
       handlebars.precompile(*args)
     end

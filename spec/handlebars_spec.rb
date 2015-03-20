@@ -23,6 +23,17 @@ describe(Handlebars::Context) do
     end
   end
 
+  describe "loading Helpers" do
+    before do
+      subject.load_helper('spec/sample_helper.js')
+    end
+
+    it "can call helpers defined in a javascript file" do
+      t = compile('{{#nthTimes 2}}yep {{/nthTimes}}hurrah!')
+      t.call.should eql 'yep yep hurrah!'
+    end
+  end
+
   describe "registering Helpers" do
     before do
       subject.register_helper('alsowith') do |this, context, block|
