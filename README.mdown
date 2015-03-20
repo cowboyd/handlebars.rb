@@ -26,6 +26,8 @@ This uses [therubyracer][1] to bind to the _actual_ JavaScript implementation of
 Just like JavaScript, you can write block helpers with an `{{else}}` section. To print
 out a section twice if a condition is met:
 
+    # V8 maps the first argument sent to a block to "this". All subsequent arguments are as
+    # described in the Handlebars documentation.
     handlebars.register_helper(:twice) do |context, condition, block|
       if condition
         "#{block.fn(context)}#{block.fn(context)}"
@@ -36,6 +38,38 @@ out a section twice if a condition is met:
     template = handlebars.compile("{{#twice foo}}Hurray!{{else}}Boo!{{/twice}}")
     template.call(foo: true) #=> Hurray!Hurray!
     template.call(foo: false) #=> Boo!
+
+### Private variables:
+
+Just like JavaScript, block helpers can inject private variables into their child templates.
+These can be accessed in a template using the `@` prefix:
+
+    handlebars.register_helper(:list) do |this, context, block|
+      "<ul>" + context.each_with_index.map do |x, i|
+        if block.keys.include? "data"
+          data = handlebars.create_frame(block.data)
+          data.index = i
+        end
+        "<li>" + block.fn(x, data: data) + "</li>"
+      end.join + "</ul>"
+    end
+    template = handlebars.compile("{{#list array}}{{@index}}. {{title}}{{/list}}")
+    template.call(array: [{title: "Memento"}, {title: "Inception"}])
+    #=> "<ul><li>0. Memento</li><li>1. Inception</li></ul>"
+
+### Hash arguments:
+
+When using hash arguments, beware of one gotcha - V8 defines the #hash method for every
+object. Therefore, to access the hash object of the options argument Handlebars sends to your
+block, you must use the `[]` method:
+
+    handlebars.register_helper :list do |this, context, options|
+      attrs = options[:hash].map{|k,v| "#{k}=\"#{v}\""}.join(' ')
+      "<ul #{attrs}>" + context.map{|item| "<li>" + options.fn(item) + "</li>"}.join + "</ul>"
+    end
+    template = handlebars.compile(%({{#list nav id="nav-bar" class="top"}}<a href="{{url}}">{{title}}</a>{{/list}}))
+    template.call({nav: [{url: 'www.google.com', title: 'Google'}]})
+    #=> <ul class="top" id="nav-bar"><li><a href="www.google.com">Google</a></li></ul>
 
 ### Safe Strings
 
