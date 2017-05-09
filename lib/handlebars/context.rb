@@ -3,6 +3,14 @@ require 'v8'
 
 module Handlebars
   class Context
+    def self.current
+      Thread.current.thread_variable_get(:current)
+    end
+
+    def self.current=(context)
+      Thread.current.thread_variable_set(:current, context)
+    end
+
     def initialize
       @js = V8::Context.new
       @js['global'] = {} # there may be a more appropriate object to be used here @MHW
@@ -53,10 +61,6 @@ module Handlebars
 
     def [](key)
       data[key]
-    end
-
-    class << self
-      attr_accessor :current
     end
 
     private
