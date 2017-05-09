@@ -12,8 +12,10 @@ Gem::Specification.new do |s|
 
   s.files         = `git ls-files lib README.mdown`.split("\n")
 
+  s.required_ruby_version = '>= 2.0.0'
+
   s.add_dependency "therubyracer", "~> 0.12.1"
-  s.add_dependency "handlebars-source", "~> 4.0.5"
+  s.add_dependency "handlebars-source", "~> 4.0.8"
   s.add_development_dependency "rake"
-  s.add_development_dependency "rspec", "~> 2.0"
+  s.add_development_dependency "rspec", "~> 3.6.0"
 end

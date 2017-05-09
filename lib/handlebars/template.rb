@@ -3,7 +3,7 @@ module Handlebars
     def initialize(context, fn)
       @context, @fn = context, fn
     end
-    
+
     def call(*args)
       current = Handlebars::Context.current
       Handlebars::Context.current = @context
