@@ -1,18 +1,30 @@
 require 'handlebars/source'
-require 'v8'
+require 'mini_racer'
+require 'securerandom'
 
 module Handlebars
   class Context
     def initialize
-      @js = V8::Context.new
-      @js['global'] = {} # there may be a more appropriate object to be used here @MHW
+      @js = MiniRacer::Context.new
+      # @js['global'] = {} # there may be a more appropriate object to be used here @MHW
       @js.load(Handlebars::Source.bundled_path)
 
-      @partials = handlebars.partials = Handlebars::Partials.new
+      # @partials = handlebars.partials = Handlebars::Partials.new
     end
 
-    def compile(*args)
-      ::Handlebars::Template.new(self, handlebars.compile(*args))
+    def fn_handle
+      "js_fn_#{SecureRandom.hex}"
+    end
+
+    def compile(template)
+      handle = fn_handle
+      invocation = %Q{var #{handle} = Handlebars.compile(\"#{template}\");}
+      @js.eval(invocation)
+      ::Handlebars::Template.new(self, handle)
+    end
+
+    def eval(*args)
+      @js.eval(*args)
     end
 
     def load_helpers(helpers_pattern)
@@ -27,12 +39,18 @@ module Handlebars
       handlebars.precompile(*args)
     end
 
+    # TODO: this doesn't work well for callbacks because ruby can't call MiniRacer::JavaScriptFunction classes
+    # https://github.com/rubyjs/mini_racer/issues/228
     def register_helper(name, &fn)
-      handlebars.registerHelper(name, fn)
+      ruby_fn_in_js_name = "registeredHelper_#{name}"
+      @js.attach(ruby_fn_in_js_name, fn)
+      invocation = %Q{Handlebars.registerHelper("%s", %s);} % [name, ruby_fn_in_js_name]
+      @js.eval(invocation)
     end
 
     def register_partial(name, content)
-      handlebars.registerPartial(name, content)
+      invocation = %Q{Handlebars.registerPartial("%s", "%s")} % [name, content]
+      @js.eval(invocation)
     end
 
     def create_frame(data)
@@ -41,10 +59,6 @@ module Handlebars
 
     def partial_missing(&fn)
       @partials.partial_missing = fn
-    end
-
-    def handlebars
-      @js.eval('Handlebars')
     end
 
     def []=(key, value)
