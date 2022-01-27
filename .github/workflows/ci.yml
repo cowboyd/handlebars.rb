@@ -11,8 +11,8 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-      - name: Generate PDF
-        run: rspec spec/
+      - name: RSpec
+        run: bundle exec rspec spec/
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
