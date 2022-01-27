@@ -5,15 +5,8 @@ require 'securerandom'
 module Handlebars
   class Context
     def initialize(**kwargs)
-      @js = MiniRacer::Context.new(kwargs)
-      # @js['global'] = {} # there may be a more appropriate object to be used here @MHW
-      @js.load(Handlebars::Source.bundled_path)
-
-      # @partials = handlebars.partials = Handlebars::Partials.new
-    end
-
-    def fn_handle
-      "js_fn_#{SecureRandom.hex}"
+      @@snapshot ||= MiniRacer::Snapshot.new(File.read(Handlebars::Source.bundled_path))
+      @js = MiniRacer::Context.new(kwargs.merge(snapshot: @@snapshot))
     end
 
     # Note that this is a hacky JS expression builder. We cannot pass JS AST in to mini_racer so we have to
@@ -39,6 +32,12 @@ module Handlebars
 
     def load(path)
       @js.load(path)
+    end
+
+    private
+
+    def fn_handle
+      "js_fn_#{SecureRandom.hex}"
     end
   end
 end
