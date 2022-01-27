@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
 
   # s.add_dependency "therubyracer", "~> 0.12.1"
   s.add_dependency "mini_racer"
-  s.add_dependency "handlebars-source", "~> 4.7.0"
+  s.add_dependency "handlebars-source"
   s.add_development_dependency "rake"
   s.add_development_dependency "rspec", "~> 2.0"
 end
