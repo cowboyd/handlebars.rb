@@ -1,3 +1,3 @@
 source "https://rubygems.org"
-# Specify your gem's dependencies in handlebars.gemspec
+# Specify your gem's dependencies in smolbars.gemspec
 gemspec

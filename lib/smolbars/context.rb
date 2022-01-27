@@ -2,7 +2,7 @@ require 'handlebars/source'
 require 'mini_racer'
 require 'securerandom'
 
-module Handlebars
+module Smolbars
   class Context
     def initialize(**kwargs)
       @@snapshot ||= MiniRacer::Snapshot.new(File.read(Handlebars::Source.bundled_path))
@@ -19,7 +19,7 @@ module Handlebars
       handle = fn_handle
       invocation = %Q{var #{handle} = Handlebars.compile(`#{template}`);}
       @js.eval(invocation)
-      ::Handlebars::Template.new(self, handle)
+      ::Smolbars::Template.new(self, handle)
     end
 
     def eval(*args)

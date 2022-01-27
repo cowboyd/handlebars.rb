@@ -1,4 +1,4 @@
-module Handlebars
+module Smolbars
   class Template
     def initialize(context, fn)
       @context, @fn = context, fn

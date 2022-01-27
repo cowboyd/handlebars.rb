@@ -1,4 +1,4 @@
-## Handlebars.rb
+## Smolbars
 
 [![Gem Version](https://badge.fury.io/rb/handlebars.png)](http://badge.fury.io/rb/handlebars)
 [![Build Status](https://travis-ci.org/cowboyd/handlebars.rb.png?branch=master)](https://travis-ci.org/cowboyd/handlebars.rb)
@@ -7,7 +7,8 @@
 
 This uses [mini_racer][1] to bind to the _actual_ JavaScript implementation of
 [Handlebars.js][2] so that you can use it from ruby. This is a fork of [handlebars.rb][3] to
-change out the deprecated [therubyracer][4] JS integration.
+change out the deprecated [therubyracer][4] JS integration. 99% the same idea as the better-named
+[minibars][5].
 
 Please be mindful of how this library works: it brings in the full libv8 JS VM to your ruby environment. Each
 `Context` is a full blown JS machine (memory management, JIT, etc). This fork does not support attaching ruby
@@ -83,3 +84,4 @@ underlying JS instance
 [2]: https://github.com/wycats/handlebars.js "Handlebars JavaScript templating library"
 [3]: https://github.com/cowboyd/handlebars.rb "Handlebars Ruby library"
 [4]: https://github.com/cowboyd/therubyracer "The Ruby Racer"
+[5]: https://github.com/combinaut/minibars "Minibars"

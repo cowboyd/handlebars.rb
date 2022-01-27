@@ -1,5 +1,5 @@
-require 'handlebars'
-describe(Handlebars::Context) do
+require 'smobars'
+describe(Smolbars::Context) do
 
   describe "a simple template" do
     let(:t) { compile("Hello {{name}}") }
@@ -70,14 +70,14 @@ describe(Handlebars::Context) do
   end
 
   describe "timeout" do
-    subject { Handlebars::Context.new(timeout: 500) }
+    subject { Smolbars::Context.new(timeout: 500) }
     before do
       subject.load("spec/sample_helper.js")
     end
     let(:t) {subject.compile(%({{#sleepy 1000}} time to sleep {{/sleepy}}))}
 
     it "should timeout" do
-      skip "can't write async handlebars helpers"
+      skip "can't write async smolbars helpers"
       t.call.should == %()
     end
 
