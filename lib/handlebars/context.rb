@@ -4,8 +4,8 @@ require 'securerandom'
 
 module Handlebars
   class Context
-    def initialize
-      @js = MiniRacer::Context.new
+    def initialize(**kwargs)
+      @js = MiniRacer::Context.new(kwargs)
       # @js['global'] = {} # there may be a more appropriate object to be used here @MHW
       @js.load(Handlebars::Source.bundled_path)
 
@@ -20,6 +20,9 @@ module Handlebars
     # hope the template passed in does not form invalid Ruby. So don't use templates with backtick characters without
     # manually escaping them
     def compile(template)
+      if template.include?("`")
+        raise RuntimeError.new("template cannot contain a backtick character '`'")
+      end
       handle = fn_handle
       invocation = %Q{var #{handle} = Handlebars.compile(`#{template}`);}
       @js.eval(invocation)
@@ -36,24 +39,6 @@ module Handlebars
 
     def load(path)
       @js.load(path)
-    end
-
-    def []=(key, value)
-      data[key] = value
-    end
-
-    def [](key)
-      data[key]
-    end
-
-    class << self
-      attr_accessor :current
-    end
-
-    private
-
-    def data
-      handlebars[:_rubydata] ||= handlebars.create()
     end
   end
 end

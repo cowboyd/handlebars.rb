@@ -61,3 +61,11 @@ Handlebars.registerHelper("list", function(context, options) {
   attrs = Object.entries(options["hash"]).map(function([key,value]){ return key + "=" + '"' + value + '"'; }).join(" ");
   return `<ul ${attrs}>` + context.map(function(item){ return "<li>" + options.fn(item) + "</li>"}).join(",") + "</ul>"
 });
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+Handlebars.registerHelper("sleepy", async function(context) {
+  await sleep(context);
+});

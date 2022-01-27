@@ -15,6 +15,14 @@ describe(Handlebars::Context) do
     end
   end
 
+  describe "sanity check templates" do
+    let(:t) { compile("a very uncool `template`") }
+    it "should raise an exception on backticks in the template" do
+      expect { t }.to raise_error(RuntimeError)
+    end
+
+  end
+
   describe "loading Helpers" do
     before do
       subject.load('spec/sample_helper.js')
@@ -59,6 +67,20 @@ describe(Handlebars::Context) do
     it "accepts hash attributes correctly" do
       t.call({nav: [{url: 'url', title: 'title'}]}).should == %(<ul class="top" id="nav-bar"><li><a href="url">title</a></li></ul>)
     end
+  end
+
+  describe "timeout" do
+    subject { Handlebars::Context.new(timeout: 500) }
+    before do
+      subject.load("spec/sample_helper.js")
+    end
+    let(:t) {subject.compile(%({{#sleepy 1000}} time to sleep {{/sleepy}}))}
+
+    it "should timeout" do
+      skip "can't write async handlebars helpers"
+      t.call.should == %()
+    end
+
   end
 
   def compile(*args)
