@@ -4,3 +4,4 @@ pkg/*
 Gemfile.lock
 .ruby-gemset
 .ruby-version
+vendor/

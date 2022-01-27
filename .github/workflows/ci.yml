@@ -1,4 +1,4 @@
-name: publish
+name: ci
 on:
   push:
     tags:
