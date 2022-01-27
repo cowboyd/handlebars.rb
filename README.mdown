@@ -1,123 +1,87 @@
-## Handlebars.rb
+## Smolbars
 
-[![Gem Version](https://badge.fury.io/rb/handlebars.png)](http://badge.fury.io/rb/handlebars)
+[![Gem Version](https://badge.fury.io/rb/smolbars.png)](http://badge.fury.io/rb/handlebars)
 [![Build Status](https://travis-ci.org/cowboyd/handlebars.rb.png?branch=master)](https://travis-ci.org/cowboyd/handlebars.rb)
 [![Dependency Status](https://gemnasium.com/cowboyd/handlebars.rb.png)](https://gemnasium.com/cowboyd/handlebars.rb)
 
 
-This uses [therubyracer][1] to bind to the _actual_ JavaScript implementation of
-[Handlebars.js][2] so that you can use it from ruby.
+This uses [mini_racer][1] to bind to the _actual_ JavaScript implementation of
+[Handlebars.js][2] so that you can use it from ruby. This is a fork of [handlebars.rb][3] to
+change out the deprecated [therubyracer][4] JS integration. 99% the same idea as the better-named
+[minibars][5].
+
+Please be mindful of how this library works: it brings in the full libv8 JS VM to your ruby environment. Each
+`Context` is a full blown JS machine (memory management, JIT, etc). This fork does not support attaching ruby
+functions to the JS VM.
+
+Note on security: do not compile untrusted Handlebars templates. We compile Handlebars template by building ad-hoc
+javascript statements, a bad actor could perform an SQL-injection like attack using the v8 environment for bad things.
 
 ## Usage
 
 ### Simple stuff
 
-    require 'handlebars'
-    handlebars = Handlebars::Context.new
-    template = handlebars.compile("{{say}} {{what}}")
+    require 'smolbars'
+    smolbars = Smolbars::Context.new
+    template = smolbars.compile("{{say}} {{what}}")
     template.call(:say => "Hey", :what => "Yuh!") #=> "Hey Yuh!"
 
-### functions as properties
+### Helpers
 
-    template.call(:say => "Hey ", :what => lambda {|this| ("yo" * 2) + "!"}) #=> "Hey yoyo!"
+You must write helpers with JavaScript. The JavaScript code should include calls to the Handlebars class registration
+function.
 
-### Block Helpers:
+	require 'smolbars'
+	helper = %Q{
+		Handlebars.registerHelper("nthTimes", function(n, options){
+		  var buffer = "";
 
-Just like JavaScript, you can write block helpers with an `{{else}}` section. To print
-out a section twice if a condition is met:
+		  for(var i = 0; i < n; i++) {
+			buffer += options.fn();
+		  }
 
-    # V8 maps the first argument sent to a block to "this". All subsequent arguments are as
-    # described in the Handlebars documentation.
-    handlebars.register_helper(:twice) do |context, condition, block|
-      if condition
-        "#{block.fn(context)}#{block.fn(context)}"
-      else
-        block.inverse(context)
-      end
-    end
-    template = handlebars.compile("{{#twice foo}}Hurray!{{else}}Boo!{{/twice}}")
-    template.call(foo: true) #=> Hurray!Hurray!
-    template.call(foo: false) #=> Boo!
-
-### Private variables:
-
-Just like JavaScript, block helpers can inject private variables into their child templates.
-These can be accessed in a template using the `@` prefix:
-
-    handlebars.register_helper(:list) do |this, context, block|
-      "<ul>" + context.each_with_index.map do |x, i|
-        if block.keys.include? "data"
-          data = handlebars.create_frame(block.data)
-          data.index = i
-        end
-        "<li>" + block.fn(x, data: data) + "</li>"
-      end.join + "</ul>"
-    end
-    template = handlebars.compile("{{#list array}}{{@index}}. {{title}}{{/list}}")
-    template.call(array: [{title: "Memento"}, {title: "Inception"}])
-    #=> "<ul><li>0. Memento</li><li>1. Inception</li></ul>"
-
-### Hash arguments:
-
-When using hash arguments, beware of one gotcha - V8 defines the #hash method for every
-object. Therefore, to access the hash object of the options argument Handlebars sends to your
-block, you must use the `[]` method:
-
-    handlebars.register_helper :list do |this, context, options|
-      attrs = options[:hash].map{|k,v| "#{k}=\"#{v}\""}.join(' ')
-      "<ul #{attrs}>" + context.map{|item| "<li>" + options.fn(item) + "</li>"}.join + "</ul>"
-    end
-    template = handlebars.compile(%({{#list nav id="nav-bar" class="top"}}<a href="{{url}}">{{title}}</a>{{/list}}))
-    template.call({nav: [{url: 'www.google.com', title: 'Google'}]})
-    #=> <ul class="top" id="nav-bar"><li><a href="www.google.com">Google</a></li></ul>
-
-### Safe Strings
-
-By default, handlebars will escape strings that are returned by your block helpers. To
-mark a string as safe:
-
-    template = handlebars.compile("{{safe}}")
-    template.call(:safe => proc {Handlebars::SafeString.new("<pre>Totally Safe!<pre>")})
+		  return buffer;
+		});
+	}
+	smolbars = Smolbars::Context.new
+	smolbars.eval(helper)
+	template = smolbars.compile('{{#nthTimes 2}}yep {{/nthTimes}}hurrah!')
+	template.call # 'yep yep hurrah!'
 
 ### Partials
 
-You can directly register partials
+You must write partials with JavaScript. The JavaScript code should include calls to the Handlebars class registration
+function.
 
-    handlebars.register_partial("whoami", "I am {{who}}")
-    handlebars.compile("{{>whoami}}").call(:who => 'Legend') #=> I am Legend
-
-Partials can also be dynamically looked up by defining a partial_missing behavior:
-
-    handlebars.partial_missing do |name|
-      "unable to find >#{name}"
-    end
-    handlebars.compile("{{>missing}}").call #=> unable to find >missing
-
-Missing partials can also be returned as a function:
-
-    count = 0
-    handlebars.partial_missing do |name|
-      lambda do |this, context, options|
-        count += 1
-        "#{count} miss(es) when trying to look up a partial"
-      end
-    end
-    t = handlebars.compile("{{>missing}}")
-    t.call #=> 1 miss(es) when trying to look up a partial
-    t.call #=> 2 miss(es) when tyring to look up a partial
+	require 'smolbars'
+	partial = %Q{
+		Handlebars.registerPartial("legend", "I am {{ who }}");
+	}
+	smolbars = Smolbars::Context.new
+	smolbars.eval(partial)
+	template = smolbars.compile('{{> legend}}')
+	template.call # 'I am Legend!'
 
 ### Security
 
 In general, you should not trust user-provided templates: a template can call any method
-(with no arguments) or access any property on any object in the `Handlebars::Context`.
+(with no arguments) or access any property on any object in the `Smolbars::Context`.
 
 If you'd like to render user-provided templates, you'd want to make sure you do so in a
 sanitized Context, e.g. no filesystem access, read-only or no database access, etc.
+
+You can try setting the timeout on a Smolbars::Context through kwargs that are passed to the
+underlying JS instance
+
+    Smolbars::Context.new(timeout: 500)
 
 ## Test
 
     rspec spec/
 
 
-[1]: http://github.com/cowboyd/therubyracer "The Ruby Racer"
-[2]: http://github.com/wycats/handlebars.js "Handlebars JavaScript templating library"
+[1]: https://github.com/rubyjs/mini_racer "mini_racer"
+[2]: https://github.com/wycats/handlebars.js "Handlebars JavaScript templating library"
+[3]: https://github.com/cowboyd/handlebars.rb "Handlebars Ruby library"
+[4]: https://github.com/cowboyd/therubyracer "The Ruby Racer"
+[5]: https://github.com/combinaut/minibars "Minibars"
