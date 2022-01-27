@@ -16,9 +16,12 @@ module Handlebars
       "js_fn_#{SecureRandom.hex}"
     end
 
+    # Note that this is a hacky JS expression builder. We cannot pass JS AST in to mini_racer so we have to
+    # hope the template passed in does not form invalid Ruby. So don't use templates with backtick characters without
+    # manually escaping them
     def compile(template)
       handle = fn_handle
-      invocation = %Q{var #{handle} = Handlebars.compile(\"#{template}\");}
+      invocation = %Q{var #{handle} = Handlebars.compile(`#{template}`);}
       @js.eval(invocation)
       ::Handlebars::Template.new(self, handle)
     end
@@ -27,38 +30,12 @@ module Handlebars
       @js.eval(*args)
     end
 
-    def load_helpers(helpers_pattern)
-      Dir[helpers_pattern].each{ |path| load_helper(path) }
+    def load_pattern(pattern)
+      Dir[pattern].each{ |path| load(path) }
     end
 
-    def load_helper(path)
+    def load(path)
       @js.load(path)
-    end
-
-    def precompile(*args)
-      handlebars.precompile(*args)
-    end
-
-    # TODO: this doesn't work well for callbacks because ruby can't call MiniRacer::JavaScriptFunction classes
-    # https://github.com/rubyjs/mini_racer/issues/228
-    def register_helper(name, &fn)
-      ruby_fn_in_js_name = "registeredHelper_#{name}"
-      @js.attach(ruby_fn_in_js_name, fn)
-      invocation = %Q{Handlebars.registerHelper("%s", %s);} % [name, ruby_fn_in_js_name]
-      @js.eval(invocation)
-    end
-
-    def register_partial(name, content)
-      invocation = %Q{Handlebars.registerPartial("%s", "%s")} % [name, content]
-      @js.eval(invocation)
-    end
-
-    def create_frame(data)
-      handlebars.createFrame(data)
-    end
-
-    def partial_missing(&fn)
-      @partials.partial_missing = fn
     end
 
     def []=(key, value)

@@ -1,0 +1,1 @@
+Handlebars.registerPartial("legend", "I am {{ who }}");

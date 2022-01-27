@@ -5,8 +5,16 @@
 [![Dependency Status](https://gemnasium.com/cowboyd/handlebars.rb.png)](https://gemnasium.com/cowboyd/handlebars.rb)
 
 
-This uses [therubyracer][1] to bind to the _actual_ JavaScript implementation of
-[Handlebars.js][2] so that you can use it from ruby.
+This uses [mini_racer][1] to bind to the _actual_ JavaScript implementation of
+[Handlebars.js][2] so that you can use it from ruby. This is a fork of [handlebars.rb][3] to
+change out the deprecated [therubyracer][4] JS integration.
+
+Please be mindful of how this library works: it brings in the full libv8 JS VM to your ruby environment. Each
+`Context` is a full blown JS machine (memory management, JIT, etc). This fork does not support attaching ruby
+functions to the JS VM.
+
+Note on security: do not compile untrusted Handlebars templates. We compile Handlebars template by building ad-hoc
+javascript statements, a bad actor could perform an SQL-injection like attack.
 
 ## Usage
 
@@ -16,10 +24,6 @@ This uses [therubyracer][1] to bind to the _actual_ JavaScript implementation of
     handlebars = Handlebars::Context.new
     template = handlebars.compile("{{say}} {{what}}")
     template.call(:say => "Hey", :what => "Yuh!") #=> "Hey Yuh!"
-
-### functions as properties
-
-    template.call(:say => "Hey ", :what => lambda {|this| ("yo" * 2) + "!"}) #=> "Hey yoyo!"
 
 ### Block Helpers:
 
@@ -119,5 +123,7 @@ sanitized Context, e.g. no filesystem access, read-only or no database access, e
     rspec spec/
 
 
-[1]: http://github.com/cowboyd/therubyracer "The Ruby Racer"
-[2]: http://github.com/wycats/handlebars.js "Handlebars JavaScript templating library"
+[1]: https://github.com/rubyjs/mini_racer "mini_racer"
+[2]: https://github.com/wycats/handlebars.js "Handlebars JavaScript templating library"
+[3]: https://github.com/cowboyd/handlebars.rb "Handlebars Ruby library"
+[4]: https://github.com/cowboyd/therubyracer "The Ruby Racer"
