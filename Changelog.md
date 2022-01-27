@@ -1,5 +1,6 @@
-# 0.9.0
+# 0.1.0
 
+* Smolbars rename
 * Replace therubyracer with mini_racer
   * No more invoking Ruby from JS
   * We build templates through string concatentation. Do not pass in untrusted handlebars templates.
