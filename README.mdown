@@ -1,6 +1,6 @@
 ## Smolbars
 
-[![Gem Version](https://badge.fury.io/rb/handlebars.png)](http://badge.fury.io/rb/handlebars)
+[![Gem Version](https://badge.fury.io/rb/smolbars.png)](http://badge.fury.io/rb/handlebars)
 [![Build Status](https://travis-ci.org/cowboyd/handlebars.rb.png?branch=master)](https://travis-ci.org/cowboyd/handlebars.rb)
 [![Dependency Status](https://gemnasium.com/cowboyd/handlebars.rb.png)](https://gemnasium.com/cowboyd/handlebars.rb)
 
@@ -21,9 +21,9 @@ javascript statements, a bad actor could perform an SQL-injection like attack us
 
 ### Simple stuff
 
-    require 'handlebars'
-    handlebars = Handlebars::Context.new
-    template = handlebars.compile("{{say}} {{what}}")
+    require 'smolbars'
+    smolbars = Smolbars::Context.new
+    template = smolbars.compile("{{say}} {{what}}")
     template.call(:say => "Hey", :what => "Yuh!") #=> "Hey Yuh!"
 
 ### Helpers
@@ -31,7 +31,7 @@ javascript statements, a bad actor could perform an SQL-injection like attack us
 You must write helpers with JavaScript. The JavaScript code should include calls to the Handlebars class registration
 function.
 
-	require 'handlebars'
+	require 'smolbars'
 	helper = %Q{
 		Handlebars.registerHelper("nthTimes", function(n, options){
 		  var buffer = "";
@@ -43,9 +43,9 @@ function.
 		  return buffer;
 		});
 	}
-	handlebars = Handlebars::Context.new
-	handlebars.eval(helper)
-	template = handlebars.compile('{{#nthTimes 2}}yep {{/nthTimes}}hurrah!')
+	smolbars = Smolbars::Context.new
+	smolbars.eval(helper)
+	template = smolbars.compile('{{#nthTimes 2}}yep {{/nthTimes}}hurrah!')
 	template.call # 'yep yep hurrah!'
 
 ### Partials
@@ -53,27 +53,27 @@ function.
 You must write partials with JavaScript. The JavaScript code should include calls to the Handlebars class registration
 function.
 
-	require 'handlebars'
+	require 'smolbars'
 	partial = %Q{
 		Handlebars.registerPartial("legend", "I am {{ who }}");
 	}
-	handlebars = Handlebars::Context.new
-	handlebars.eval(partial)
-	template = handlebars.compile('{{> legend}}')
+	smolbars = Smolbars::Context.new
+	smolbars.eval(partial)
+	template = smolbars.compile('{{> legend}}')
 	template.call # 'I am Legend!'
 
 ### Security
 
 In general, you should not trust user-provided templates: a template can call any method
-(with no arguments) or access any property on any object in the `Handlebars::Context`.
+(with no arguments) or access any property on any object in the `Smolbars::Context`.
 
 If you'd like to render user-provided templates, you'd want to make sure you do so in a
 sanitized Context, e.g. no filesystem access, read-only or no database access, etc.
 
-You can try setting the timeout on a Handlebars::Context through kwargs that are passed to the
+You can try setting the timeout on a Smolbars::Context through kwargs that are passed to the
 underlying JS instance
 
-    Handlebars::Context.new(timeout: 500)
+    Smolbars::Context.new(timeout: 500)
 
 ## Test
 
