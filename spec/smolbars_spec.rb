@@ -1,4 +1,4 @@
-require 'smobars'
+require 'smolbars'
 describe(Smolbars::Context) do
 
   describe "a simple template" do
