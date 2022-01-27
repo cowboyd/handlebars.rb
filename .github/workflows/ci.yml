@@ -1,5 +1,5 @@
 name: ci
-#on:
+on: push
 #  push:
 #    tags:
 #      - '*'
