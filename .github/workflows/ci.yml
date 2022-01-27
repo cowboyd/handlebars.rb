@@ -1,8 +1,8 @@
 name: ci
-on:
-  push:
-    tags:
-      - '*'
+#on:
+#  push:
+#    tags:
+#      - '*'
 jobs:
   publish:
     runs-on: ubuntu-latest
