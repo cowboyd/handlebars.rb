@@ -12,8 +12,8 @@ Gem::Specification.new do |s|
 
   s.files         = `git ls-files lib README.mdown`.split("\n")
 
-  s.add_dependency "mini_racer"
-  s.add_dependency "handlebars-source"
-  s.add_development_dependency "rake"
+  s.add_dependency "mini_racer", "~> 0.6"
+  s.add_dependency "handlebars-source", "~> 4"
+  s.add_development_dependency "rake", "~> 13"
   s.add_development_dependency "rspec", "~> 2.0"
 end
